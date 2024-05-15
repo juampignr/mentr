@@ -14,6 +14,7 @@ export default function Medium() {
     
     const ctx = useContext(Context)
     
+    const [loading,setLoading] = useState(false)
     const [title,setTitle] = useState()
     const [summary,setSummary] = useState()
     const [page,setPage] = useState([])
@@ -35,8 +36,8 @@ export default function Medium() {
         let content = await (await ctx.wiki().page(title)).content()
         const links = await (await ctx.wiki().page(title)).links()
 
-        show(content)
-        show(links)
+        
+        ctx.setStatus(`update spy:${content[0].title}`)
         setSummary(content[0].content)
 
         delete content[0]
@@ -62,32 +63,36 @@ export default function Medium() {
 
     useAsyncEffect(async () => {
 
-        show(ctx.status)
-        if(ctx.status.includes("loading")){
+        if(loading){
 
             await initPage()
-
+            setLoading(false)
         }
 
-    },[ctx.status])
+    },[loading])
 
     useEffect(() => {
 
         const sections = document.querySelectorAll(".section")
-        console.log(sections);
 
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver((entries,observer) => {
+                
                 for(const entry of entries){
                     if(entry.isIntersecting){
                         
                         ctx.setStatus(`update spy:${entry.target.getAttribute("name")}`)
                     }
                 }
-        });
+        }, {threshold:0.1})
 
         sections.forEach((section) => observer.observe(section))
 
     },[page])
+
+    useEffect(() => {
+
+        setLoading(true)
+    },[])
 
     return(
     <>

@@ -1,29 +1,28 @@
 import css from '../styles/dewey.module.css'
-import { Context } from '../pages/_app';
+import { Context,show } from '../pages/_app';
 import { useContext,useEffect,useState } from 'react';
 
 export default function SectionSpy({children}){
 
   let ctx = useContext(Context)
-  
-  const [parentClass,setParentClass] = useState("visible")
+  const [title,setTitle] = useState(children)
+  const [titleClass,setTitleClass] = useState("flashy-text")
 
   useEffect(() => {
 
-    setParentClass("spy visible")
-
-    if(ctx.status.indexOf("update spy") != -1){
+    if(ctx.status.includes("update spy")){
 
       console.log(ctx.status)
 
       const newTitle = ctx.status.split(":")[1]
-      children = [newTitle]
+      setTitle(newTitle)
+      setTitleClass("flashy-text animate__animated animate__fadeInDown")
     }
 
   },[ctx.status])
 
 
-  return(<div className={parentClass} style={{marginTop:"8vh"}} onAnimationEnd={()=> setParentClass("spy invisible")}>
-            <h1 className="flashy-text">{children}</h1>
+  return(<div className="spy" style={{marginTop:"8vh"}}>
+            <h1 className={titleClass} onAnimationEnd={()=>{ setTitleClass("flashy-text")}}>{title}</h1>
         </div>);
 }

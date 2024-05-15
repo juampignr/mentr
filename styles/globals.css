@@ -124,3 +124,7 @@ select {
 .animate__animated.animate__fadeOut {
   --animate-duration: .50s;
 }
+
+.animate__animated.animate__fadeInDown {
+  --animate-duration: .50s;
+}

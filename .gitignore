@@ -147,3 +147,4 @@ dist
 # Realm DBs
 default.realm*
 
+.vercel
